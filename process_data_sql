@@ -1,0 +1,21 @@
+-- Cleaning and processing data from May 2025
+
+SELECT 
+  member_casual, 
+  rideable_type,
+  CONCAT(member_casual, "+", rideable_type) as member_rideable, -- additional category for a pie chart
+  EXTRACT(dayofweek FROM started_at) as start_dow,              -- day of week
+  CASE
+    WHEN EXTRACT(dayofweek FROM started_at)=1 THEN 'Monday'
+    WHEN EXTRACT(dayofweek FROM started_at)=2 THEN 'Tuesday'
+    WHEN EXTRACT(dayofweek FROM started_at)=3 THEN 'Wednesday'
+    WHEN EXTRACT(dayofweek FROM started_at)=4 THEN 'Thursday'
+    WHEN EXTRACT(dayofweek FROM started_at)=5 THEN 'Friday'
+    WHEN EXTRACT(dayofweek FROM started_at)=6 THEN 'Saturday'
+    WHEN EXTRACT(dayofweek FROM started_at)=7 THEN 'Sunday'  
+  END as start_dow_name,                                        -- name of day of week
+  EXTRACT(day FROM started_at) as start_day,                    -- day from date, to plot line charts
+  DATE_DIFF(ended_at, started_at, second) as ride_length_s      -- total length in seconds
+FROM `tempproject-467019.cyclistic_capstone.202505_data`
+WHERE DATE_DIFF(ended_at, started_at, second) >0
+ORDER BY ride_length_s;
